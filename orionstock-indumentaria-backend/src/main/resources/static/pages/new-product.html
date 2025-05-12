@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuevo Producto - OrionStock</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <!-- Incluir el componente sidebar -->
+    <div id="sidebar-container"></div>
+
+    <main class="main-content">
+        <nav class="navbar">
+            <div class="navbar-content">
+                <h1 class="page-title">Nuevo Producto</h1>
+                <div class="user-menu">
+                    <button class="user-menu-button" onclick="toggleUserMenu()">
+                        <i class="fas fa-user"></i>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="user-menu-dropdown" id="userMenuDropdown">                        <a href="#" class="user-menu-item" style="display: none;">
+                            <i class="fas fa-user-circle"></i>
+                            Mi Perfil
+                        </a>
+                        <a href="#" class="user-menu-item">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Cerrar Sesión
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container-fluid mt-4">
+            <div class="card">
+                <div class="card-body">
+                    <ul class="nav nav-tabs" id="productTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="producto-tab" data-bs-toggle="tab" data-bs-target="#producto" type="button" role="tab" aria-controls="producto" aria-selected="true">Información del Producto</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="variantes-tab" data-bs-toggle="tab" data-bs-target="#variantes" type="button" role="tab" aria-controls="variantes" aria-selected="false">Variantes</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content mt-4" id="productTabContent">                        <!-- Pestaña de Información del Producto -->
+                        <div class="tab-pane fade show active" id="producto" role="tabpanel" aria-labelledby="producto-tab">
+                            <form id="productoForm">
+                                <div class="mb-3">
+                                    <label for="nombreProducto" class="form-label">Nombre del Producto</label>
+                                    <input type="text" class="form-control" id="nombreProducto" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="categoriaProducto" class="form-label">Categoría</label>
+                                    <select class="form-select" id="categoriaProducto" required>
+                                        <option value="">Seleccione una categoría</option>
+                                        <option value="Remera">Remera</option>
+                                        <option value="Pantalon">Pantalón</option>
+                                        <option value="Campera">Campera</option>
+                                        <option value="Zapatilla">Zapatilla</option>
+                                    </select>
+                                </div><div class="d-flex justify-content-end">
+                                    <button type="button" class="btn btn-primary d-flex align-items-center gap-2" id="guardarProductoBtn">
+                                        <i class="fas fa-save"></i>
+                                        <span>Guardar y Continuar</span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- Pestaña de Variantes -->
+                        <div class="tab-pane fade" id="variantes" role="tabpanel" aria-labelledby="variantes-tab">
+                            <div id="variantesContainer">
+                                <div class="alert alert-info" id="noProductoAlert">
+                                    Primero debe crear el producto base antes de agregar variantes.
+                                </div>
+                                <form id="varianteForm" style="display: none;">                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <label for="talleVariante" class="form-label">Talle</label>
+                                            <select class="form-select" id="talleVariante" required>
+                                                <option value="">Seleccione un talle</option>
+                                                <option value="XS">XS</option>
+                                                <option value="S">S</option>
+                                                <option value="M">M</option>
+                                                <option value="L">L</option>
+                                                <option value="XL">XL</option>
+                                                <option value="XXL">XXL</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="colorVariante" class="form-label">Color</label>
+                                            <input type="text" class="form-control" id="colorVariante" required>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="estadoVariante" class="form-label">Estado</label>
+                                            <select class="form-select" id="estadoVariante" required>
+                                                <option value="Disponible">Disponible</option>
+                                                <option value="Pocas">Pocas Unidades</option>
+                                                <option value="Agotado">Agotado</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="precioCompraVariante" class="form-label">Precio Unidad Compra</label>
+                                            <input type="number" class="form-control" id="precioCompraVariante" required min="0" step="0.01">
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="precioVentaVariante" class="form-label">Precio Unidad Venta</label>
+                                            <input type="number" class="form-control" id="precioVentaVariante" required min="0" step="0.01">
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="cantidadVariante" class="form-label">Cantidad</label>
+                                            <input type="number" class="form-control" id="cantidadVariante" required min="0">
+                                        </div>
+                                    </div><div class="d-flex justify-content-end mt-3">
+                                        <button type="submit" class="btn btn-primary d-flex align-items-center gap-2">
+                                            <i class="fas fa-plus"></i>
+                                            <span>Agregar Variante</span>
+                                        </button>
+                                    </div>
+                                </form>
+                                <div class="mt-4">
+                                    <h6>Variantes Agregadas</h6>
+                                    <div class="table-responsive">
+                                        <table class="table" id="variantesTable">                                            <thead>
+                                                <tr>
+                                                    <th>Talle</th>
+                                                    <th>Color</th>
+                                                    <th>Estado</th>
+                                                    <th>Precio Compra</th>
+                                                    <th>Precio Venta</th>
+                                                    <th>Cantidad</th>
+                                                    <th>Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>                            <div class="d-flex justify-content-between mt-4">
+                                <button type="button" class="btn btn-outline-secondary d-flex align-items-center gap-2" onclick="window.location.href='inventory.html'">
+                                    <i class="fas fa-times"></i>
+                                    <span>Cancelar</span>
+                                </button>
+                                <button type="button" class="btn btn-primary d-flex align-items-center gap-2" id="finalizarProductoBtn">
+                                    <i class="fas fa-check"></i>
+                                    <span>Finalizar</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/new-product.js"></script>
+</body>
+</html>
