@@ -6,7 +6,7 @@ services:
     build: ./orionstock-indumentaria-backend
     mem_limit: 512m
     ports:
-      - "80:80"
+      - "80:8080"
     environment:
       DB_URL: jdbc:mysql://orionstock_indumentaria:3306/orionstockindumentaria?createDatabaseIfNotExist=true&serverTimezone=UTC
       DB_USER_NAME: root
@@ -35,6 +35,21 @@ services:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       timeout: 10s
       retries: 10
+    networks:
+      - orionnet
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: orionstock_indumentaria
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: 1234
+    depends_on:
+      - orionstock_indumentaria
     networks:
       - orionnet
 

@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function() {    // Cargar el compo
         };
 
         try {
-            const response = await fetch(`http://localhost:80/api/ropa/crear/${localId}`, {
+            const response = await fetch(`http://localhost:8080/api/ropa/crear/${localId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function() {    // Cargar el compo
             }));
 
             // Enviar todas las variantes en una sola llamada
-            const response = await fetch(`http://localhost:80/api/variante/crear/${idRopa}`, {
+            const response = await fetch(`http://localhost:8080/api/variante/crear/${idRopa}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
