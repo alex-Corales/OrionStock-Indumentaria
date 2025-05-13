@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
             };
 
             try {
-                const response = await fetch(`http://localhost:8080/api/ropa/crear/${localId}`, {
+                const response = await fetch(`http://localhost:80/api/ropa/crear/${localId}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         cantidad: variante.cantidad
                     };
 
-                    return fetch(`http://localhost:8080/api/variante/crear/${idRopa}`, {
+                    return fetch(`http://localhost:80/api/variante/crear/${idRopa}`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -199,7 +199,7 @@ async function initializeInventoryTable() {
     }
 
     try {
-        const response = await fetch(`http://localhost:8080/api/ropa/traer/${localId}`);
+        const response = await fetch(`http://localhost:80/api/ropa/traer/${localId}`);
         if (!response.ok) {
             throw new Error('Error al obtener los datos del inventario');
         }

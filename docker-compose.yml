@@ -6,7 +6,7 @@ services:
     build: ./orionstock-indumentaria-backend
     mem_limit: 512m
     ports:
-      - "8080:8080"
+      - "80:8080"
     environment:
       DB_URL: jdbc:mysql://orionstock_indumentaria:3306/orionstockindumentaria?createDatabaseIfNotExist=true&serverTimezone=UTC
       DB_USER_NAME: root
