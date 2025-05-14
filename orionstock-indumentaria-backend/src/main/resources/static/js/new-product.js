@@ -32,8 +32,14 @@ document.addEventListener('DOMContentLoaded', function() {    // Cargar el compo
     guardarProductoBtn.addEventListener('click', async function() {
         const localId = localStorage.getItem('localId');
         if (!localId) {
-            alert('No se encontró ID del local. Por favor, inicie sesión nuevamente.');
-            window.location.href = '../index.html';
+            Swal.fire({
+                title: 'Error',
+                text: 'No se encontró ID del local. Por favor, inicie sesión nuevamente.',
+                icon: 'error',
+                confirmButtonColor: '#1a1a1a'
+            }).then(() => {
+                window.location.href = '../index.html';
+            });
             return;
         }
 
@@ -73,66 +79,119 @@ document.addEventListener('DOMContentLoaded', function() {    // Cargar el compo
             tab.show();
 
             // Mostrar mensaje de éxito
-            alert('Producto creado exitosamente. Ahora puede agregar variantes.');
+            Swal.fire({
+                title: '¡Producto Creado!',
+                text: 'Ahora puedes agregar las variantes del producto',
+                icon: 'success',
+                confirmButtonColor: '#1a1a1a'
+            });
         } catch (error) {
             console.error('Error al crear el producto:', error);
-            alert('Error al crear el producto. Por favor, intente nuevamente.');
+            Swal.fire({
+                title: 'Error',
+                text: 'Error al crear el producto. Por favor, intente nuevamente.',
+                icon: 'error',
+                confirmButtonColor: '#1a1a1a'
+            });
         }
     });
 
-    // Manejar la adición de variantes
+    // Evento de adición de variantes
     varianteForm.addEventListener('submit', function(e) {
-        e.preventDefault();        const varianteData = {
+        e.preventDefault();
+        const cantidad = parseInt(document.getElementById('cantidadVariante').value);
+        const varianteData = {
             talle: document.getElementById('talleVariante').value,
             color: document.getElementById('colorVariante').value,
-            estado: document.getElementById('estadoVariante').value,
+            estado: cantidad > 0 ? "Disponible" : "Agotado",
             precioCompra: parseFloat(document.getElementById('precioCompraVariante').value),
             precioVenta: parseFloat(document.getElementById('precioVentaVariante').value),
-            cantidad: parseInt(document.getElementById('cantidadVariante').value)
+            cantidad: cantidad
         };
 
         variantesProducto.push(varianteData);
         actualizarTablaVariantes();
         varianteForm.reset();
+
+        // Mostrar mensaje de éxito al agregar variante
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        });
+        Toast.fire({
+            icon: 'success',
+            title: 'Variante agregada correctamente'
+        });
     });
 
     // Manejar la finalización del producto
     finalizarProductoBtn.addEventListener('click', async function() {
         if (variantesProducto.length === 0) {
-            alert('Debe agregar al menos una variante al producto.');
+            Swal.fire({
+                title: 'Error',
+                text: 'Debe agregar al menos una variante al producto.',
+                icon: 'warning',
+                confirmButtonColor: '#1a1a1a'
+            });
             return;
         }
 
-        try {
-            // Preparar el array de variantes con el formato correcto
-            const variantesData = variantesProducto.map(variante => ({
-                talle: variante.talle,
-                color: variante.color,
-                estado: variante.estado,
-                precioUnidadCompra: variante.precioCompra,
-                precioUnidadVenta: variante.precioVenta,
-                cantidad: variante.cantidad
-            }));
+        // Mostrar confirmación antes de guardar
+        const confirmarGuardado = await Swal.fire({
+            title: '¿Guardar producto?',
+            text: "¿Deseas guardar el producto con todas sus variantes?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#1a1a1a',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, guardar',
+            cancelButtonText: 'Cancelar'
+        });
 
-            // Enviar todas las variantes en una sola llamada
-            const response = await fetch(`/api/variante/crear/${idRopa}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(variantesData)
-            });
+        if (confirmarGuardado.isConfirmed) {
+            try {
+                const variantesData = variantesProducto.map(variante => ({
+                    talle: variante.talle,
+                    color: variante.color,
+                    estado: variante.cantidad > 0 ? "Disponible" : "Agotado",
+                    precioUnidadCompra: variante.precioCompra,
+                    precioUnidadVenta: variante.precioVenta,
+                    cantidad: variante.cantidad
+                }));
 
-            if (!response.ok) {
-                throw new Error('Error al guardar las variantes');
+                const response = await fetch(`/api/variante/crear/${idRopa}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(variantesData)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error al guardar las variantes');
+                }
+
+                // Mostrar mensaje de éxito y redirigir
+                Swal.fire({
+                    title: '¡Guardado Exitoso!',
+                    text: 'El producto y sus variantes se han guardado correctamente.',
+                    icon: 'success',
+                    confirmButtonColor: '#1a1a1a'
+                }).then(() => {
+                    window.location.href = 'inventory.html';
+                });
+            } catch (error) {
+                console.error('Error al guardar las variantes:', error);
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Error al guardar las variantes. Por favor, intente nuevamente.',
+                    icon: 'error',
+                    confirmButtonColor: '#1a1a1a'
+                });
             }
-
-            // Redirigir al inventario
-            alert('Producto y variantes guardados exitosamente.');
-            window.location.href = 'inventory.html';
-        } catch (error) {
-            console.error('Error al guardar las variantes:', error);
-            alert('Error al guardar las variantes. Por favor, intente nuevamente.');
         }
     });
 
@@ -145,12 +204,15 @@ document.addEventListener('DOMContentLoaded', function() {    // Cargar el compo
 
 function actualizarTablaVariantes() {
     const tbody = document.querySelector('#variantesTable tbody');
-    tbody.innerHTML = '';    variantesProducto.forEach((variante, index) => {
+    tbody.innerHTML = '';
+
+    variantesProducto.forEach((variante, index) => {
+        const estado = variante.cantidad > 0 ? "Disponible" : "Agotado";
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>${variante.talle}</td>
             <td>${variante.color}</td>
-            <td><span class="badge ${getBadgeClass(variante.estado)}">${variante.estado}</span></td>
+            <td><span class="badge ${getBadgeClass(estado)}">${estado}</span></td>
             <td>$${variante.precioCompra.toLocaleString('es-AR')}</td>
             <td>$${variante.precioVenta.toLocaleString('es-AR')}</td>
             <td>${variante.cantidad}</td>
@@ -165,16 +227,39 @@ function actualizarTablaVariantes() {
 }
 
 function eliminarVariante(index) {
-    variantesProducto.splice(index, 1);
-    actualizarTablaVariantes();
+    Swal.fire({
+        title: '¿Eliminar variante?',
+        text: '¿Estás seguro de que deseas eliminar esta variante?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#1a1a1a',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            variantesProducto.splice(index, 1);
+            actualizarTablaVariantes();
+            
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+            Toast.fire({
+                icon: 'success',
+                title: 'Variante eliminada correctamente'
+            });
+        }
+    });
 }
 
 function getBadgeClass(estado) {
     switch (estado) {
         case 'Disponible':
             return 'badge-estado disponible';
-        case 'Pocas':
-            return 'badge-estado pocas';
         case 'Agotado':
             return 'badge-estado agotado';
         default:

@@ -22,4 +22,10 @@ public class VarianteController {
         return ResponseEntity.ok("Se creo con exito");
     }
 
+    @DeleteMapping("/eliminar-variante/{idVariante}")
+    public ResponseEntity<?> eliminarVariante(@PathVariable Long idVariante){
+        iVarianteService.eliminarVariante(idVariante);
+        return ResponseEntity.ok("Se elimino con exito");
+    }
+
 }

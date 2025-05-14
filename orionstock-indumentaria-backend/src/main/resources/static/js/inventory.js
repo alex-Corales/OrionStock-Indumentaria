@@ -16,8 +16,34 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error al cargar el sidebar:', error);
         });
 
-    // Inicializar la tabla de inventario
+    // Inicializar la tabla de inventario y configurar los filtros
     initializeInventoryTable();
+
+    // Sincronizar los campos de búsqueda
+    const searchInput = document.getElementById('searchInput');
+    const modalSearchInput = document.getElementById('modalSearchInput');
+    const modalCategoryFilter = document.getElementById('modalCategoryFilter');
+    
+    // Configurar el botón de búsqueda rápida
+    document.getElementById('searchButton').addEventListener('click', function() {
+        modalSearchInput.value = searchInput.value;
+        applyFilters();
+    });
+
+    // Búsqueda rápida al presionar Enter
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            modalSearchInput.value = searchInput.value;
+            applyFilters();
+        }
+    });
+
+    // Aplicar filtros desde el modal
+    document.getElementById('applyFiltersBtn').addEventListener('click', function() {
+        searchInput.value = modalSearchInput.value;
+        applyFilters();
+        bootstrap.Modal.getInstance(document.getElementById('filtersModal')).hide();
+    });
 
     // Event listeners para el modal de nuevo producto
     const nuevoProductoModal = document.getElementById('nuevoProductoModal');
@@ -209,32 +235,28 @@ async function initializeInventoryTable() {
         const tbody = document.querySelector('table tbody');
         tbody.innerHTML = ''; // Limpiar tabla existente
 
-        inventario.forEach((item, index) => {
-            const getBadgeClass = (estado) => {
+        inventario.forEach((item, index) => {            const getBadgeClass = (estado) => {
                 switch (estado) {
                     case 'Disponible':
                         return 'badge-estado disponible';
-                    case 'Pocas':
-                        return 'badge-estado pocas';
                     case 'Agotado':
                         return 'badge-estado agotado';
                     default:
                         return 'badge-estado';
                 }
-            };
-
-            const row = document.createElement('tr');
+            };            
+            const row = document.createElement('tr');            
             row.innerHTML = `
-                <td class="px-4">#${index + 1}</td>
-                <td>${item.nombre}</td>
+                <td class="px-4">${item.nombre}</td>
                 <td>${item.categoria}</td>
                 <td>${item.talle}</td>
                 <td>${item.color}</td>
                 <td>${item.cantidad}</td>
+                <td>$${item.precioUnidadCompra.toLocaleString('es-AR')}</td>
                 <td>$${item.precioUnidadVenta.toLocaleString('es-AR')}</td>
                 <td><span class="badge ${getBadgeClass(item.estado)}">${item.estado}</span></td>
-                <td class="text-end px-4">
-                    <button class="btn btn-sm btn-link text-danger" onclick="eliminarItem(${index})">
+                <td class="text-end px-4">                
+                        <button class="btn btn-sm btn-link text-danger" onclick="eliminarItem(${item.idVariante})">
                         <i class="fas fa-trash"></i>
                     </button>
                 </td>
@@ -247,9 +269,115 @@ async function initializeInventoryTable() {
     }
 }
 
-function eliminarItem(index) {
-    // Función para eliminar un item (a implementar)
-    console.log('Eliminar item:', index);
+// Función para aplicar los filtros
+async function applyFilters() {
+    const localId = localStorage.getItem('localId');
+    if (!localId) {
+        alert('No se encontró ID del local. Por favor, inicie sesión nuevamente.');
+        window.location.href = '../index.html';
+        return;
+    }    const searchTerm = document.getElementById('modalSearchInput').value;
+    const category = document.getElementById('modalCategoryFilter').value;
+
+    try {
+        // Construir la URL con los parámetros de búsqueda
+        let url = `/api/ropa/traer/${localId}/filtro?`;
+        if (category) {
+            url += `categoria=${encodeURIComponent(category)}&`;
+        }
+        if (searchTerm) {
+            url += `nombre=${encodeURIComponent(searchTerm)}`;
+        }
+
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error('Error al obtener los productos filtrados');
+        }
+
+        const productos = await response.json();
+        updateInventoryTable(productos);
+    } catch (error) {
+        console.error('Error al aplicar los filtros:', error);
+        alert('Error al buscar productos. Por favor, intente nuevamente.');
+    }
+}
+
+// Función para actualizar la tabla con los productos filtrados
+function updateInventoryTable(productos) {
+    const tbody = document.querySelector('table tbody');
+    tbody.innerHTML = ''; // Limpiar la tabla
+
+    productos.forEach((producto, index) => {        const getBadgeClass = (estado) => {
+            switch (estado) {
+                case 'Disponible':
+                    return 'badge-estado disponible';
+                case 'Agotado':
+                    return 'badge-estado agotado';
+                default:
+                    return 'badge-estado';
+            }
+        };
+
+        const row = document.createElement('tr');        row.innerHTML = `            <td class="px-4">${producto.nombre}</td>
+            <td>${producto.categoria}</td>
+            <td>${producto.talle}</td>
+            <td>${producto.color || '-'}</td>
+            <td>${producto.cantidad}</td>
+            <td>$${producto.precioUnidadCompra.toLocaleString('es-AR')}</td>
+            <td>$${producto.precioUnidadVenta.toLocaleString('es-AR')}</td>
+            <td>
+                <span class="badge ${getBadgeClass(producto.estado)}">
+                    ${producto.estado}
+                </span>
+            </td>            <td class="text-end px-4">
+                <button class="btn btn-sm btn-link text-danger" onclick="eliminarItem(${producto.idVariante})">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+function eliminarItem(idVariante) {
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: "No podrás revertir esta acción",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#1a1a1a',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`/api/variante/eliminar-variante/${idVariante}`, {
+                method: 'DELETE'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error al eliminar la variante');
+                }
+                // Actualizar la tabla después de eliminar
+                initializeInventoryTable();
+                Swal.fire({
+                    title: '¡Eliminado!',
+                    text: 'La variante ha sido eliminada exitosamente.',
+                    icon: 'success',
+                    confirmButtonColor: '#1a1a1a'
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Hubo un problema al eliminar la variante. Por favor, intente nuevamente.',
+                    icon: 'error',
+                    confirmButtonColor: '#1a1a1a'
+                });
+            });
+        }
+    });
 }
 
 function actualizarTablaVariantes() {

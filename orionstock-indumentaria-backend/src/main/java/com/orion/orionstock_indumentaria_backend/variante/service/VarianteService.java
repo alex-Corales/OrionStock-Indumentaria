@@ -39,4 +39,10 @@ public class VarianteService implements IVarianteService{
         iRopaRepository.findById(idRopa).orElseThrow(() -> new RuntimeException("El producto no existe en la base de datos"));
         return iVarianteRepository.findAllByIdRopa(idRopa);
     }
+
+    @Override
+    public void eliminarVariante(Long idVariante) {
+        iVarianteRepository.findById(idVariante).orElseThrow(() -> new RuntimeException("La variante que quiere eliminar no se encuentra en la base de datos"));
+        iVarianteRepository.deleteById(idVariante);
+    }
 }

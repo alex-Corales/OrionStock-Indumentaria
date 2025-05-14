@@ -11,6 +11,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../css/style.css">
+    <!-- SweetAlert2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <!-- Incluir el componente sidebar -->
@@ -40,26 +44,28 @@
 
         <!-- Contenido del Inventario -->
         <div class="inventory-container">
-            <!-- Barra de herramientas del inventario -->
-            <div class="inventory-toolbar mb-4">
+            <!-- Barra de herramientas del inventario -->            <div class="inventory-toolbar mb-4">
                 <div class="row align-items-center">
-                    <div class="col-md-6 mb-3 mb-md-0">
+                    <div class="col-md-8 mb-3 mb-md-0">
                         <div class="input-group">
                             <span class="input-group-text bg-white border-end-0">
                                 <i class="fas fa-search text-muted"></i>
                             </span>
-                            <input type="text" class="form-control border-start-0" placeholder="Buscar en inventario...">
+                            <input type="text" id="searchInput" class="form-control border-start-0" placeholder="Buscar en inventario...">
+                            <button id="searchButton" class="btn btn-primary">
+                                <i class="fas fa-search"></i>
+                            </button>
                         </div>
                     </div>
-                    <div class="col-md-6 d-flex justify-content-md-end gap-2">                        <button class="btn btn-primary d-flex align-items-center gap-2" onclick="window.location.href='new-product.html'">
+                    <div class="col-md-4 d-flex justify-content-md-end gap-2">
+                        <button class="btn btn-outline-secondary d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#filtersModal">
+                            <i class="fas fa-filter"></i>
+                            <span>Filtros</span>
+                        </button>
+                        <button class="btn btn-primary d-flex align-items-center gap-2" onclick="window.location.href='new-product.html'">
                             <i class="fas fa-plus"></i>
                             <span>Nuevo Producto</span>
                         </button>
-                        <!-- Botón de filtros temporalmente oculto -->
-                        <!-- <button class="btn btn-outline-secondary d-flex align-items-center gap-2">
-                            <i class="fas fa-filter"></i>
-                            <span>Filtros</span>
-                        </button> -->
                     </div>
                 </div>
             </div>
@@ -68,15 +74,14 @@
             <div class="card">
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="bg-light">
+                        <table class="table table-hover mb-0">                            <thead class="bg-light">
                                 <tr>
-                                    <th scope="col" class="px-4">Código</th>
-                                    <th scope="col">Nombre</th>
+                                    <th scope="col" class="px-4">Nombre</th>
                                     <th scope="col">Categoría</th>
                                     <th scope="col">Talle</th>
                                     <th scope="col">Color</th>
                                     <th scope="col">Stock</th>
+                                    <th scope="col">Precio Compra</th>
                                     <th scope="col">Precio Venta</th>
                                     <th scope="col">Estado</th>
                                     <th scope="col" class="text-end px-4">Acciones</th>
@@ -107,7 +112,40 @@
                 </ul>
             </nav> -->
         </div>
-    </main><!-- Bootstrap Bundle with Popper -->
+    </main>
+
+    <!-- Modal de Filtros -->
+    <div class="modal fade" id="filtersModal" tabindex="-1" aria-labelledby="filtersModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="filtersModalLabel">Filtrar Productos</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="modalSearchInput" class="form-label">Buscar por nombre</label>
+                        <input type="text" class="form-control" id="modalSearchInput">
+                    </div>
+                    <div class="mb-3">
+                        <label for="modalCategoryFilter" class="form-label">Categoría</label>
+                        <select class="form-select" id="modalCategoryFilter">
+                            <option value="">Todas las categorías</option>
+                            <option value="Remera">Remera</option>
+                            <option value="Pantalon">Pantalón</option>
+                            <option value="Buzo">Buzo</option>
+                            <option value="Campera">Campera</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="applyFiltersBtn">Aplicar Filtros</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../js/inventory.js"></script>
 </body>

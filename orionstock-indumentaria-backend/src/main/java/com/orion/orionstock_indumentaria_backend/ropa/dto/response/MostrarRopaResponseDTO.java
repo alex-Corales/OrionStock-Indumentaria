@@ -9,6 +9,8 @@ import lombok.*;
 
 @Setter @Getter @NoArgsConstructor @AllArgsConstructor @ToString
 public class MostrarRopaResponseDTO {
+    private Long idRopa;
+    private Long idVariante;
     private String nombre;
     @Enumerated(EnumType.STRING)
     private Categoria categoria;

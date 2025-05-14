@@ -8,4 +8,5 @@ import java.util.List;
 public interface IVarianteService {
     void crearVariante(List<CrearVarianteRequestDTO> varianteRequestDTO, Long idRopa);
     List<Variante> mostrarVariante(Long idRopa);
+    void eliminarVariante(Long idVariante);
 }

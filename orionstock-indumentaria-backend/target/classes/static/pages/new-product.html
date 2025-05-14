@@ -11,6 +11,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../css/style.css">
+    <!-- SweetAlert2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <!-- Incluir el componente sidebar -->
@@ -62,8 +66,8 @@
                                         <option value="">Seleccione una categoría</option>
                                         <option value="Remera">Remera</option>
                                         <option value="Pantalon">Pantalón</option>
+                                        <option value="Buzo">Buzo</option>
                                         <option value="Campera">Campera</option>
-                                        <option value="Zapatilla">Zapatilla</option>
                                     </select>
                                 </div><div class="d-flex justify-content-end">
                                     <button type="button" class="btn btn-primary d-flex align-items-center gap-2" id="guardarProductoBtn">
@@ -90,6 +94,7 @@
                                                 <option value="L">L</option>
                                                 <option value="XL">XL</option>
                                                 <option value="XXL">XXL</option>
+                                                <option value="UNICO">UNICO</option>
                                             </select>
                                         </div>
                                         <div class="col-md-4 mb-3">
@@ -97,10 +102,8 @@
                                             <input type="text" class="form-control" id="colorVariante" required>
                                         </div>
                                         <div class="col-md-4 mb-3">
-                                            <label for="estadoVariante" class="form-label">Estado</label>
-                                            <select class="form-select" id="estadoVariante" required>
+                                            <label for="estadoVariante" class="form-label">Estado</label>                                            <select class="form-select" id="estadoVariante" required>
                                                 <option value="Disponible">Disponible</option>
-                                                <option value="Pocas">Pocas Unidades</option>
                                                 <option value="Agotado">Agotado</option>
                                             </select>
                                         </div>
