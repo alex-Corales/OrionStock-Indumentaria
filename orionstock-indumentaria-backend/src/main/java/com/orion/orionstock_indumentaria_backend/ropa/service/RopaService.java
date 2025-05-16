@@ -3,6 +3,7 @@ package com.orion.orionstock_indumentaria_backend.ropa.service;
 import com.orion.orionstock_indumentaria_backend.local.model.Local;
 import com.orion.orionstock_indumentaria_backend.local.repository.ILocalRepository;
 import com.orion.orionstock_indumentaria_backend.ropa.dto.request.CargarRopaRequestDTO;
+import com.orion.orionstock_indumentaria_backend.ropa.dto.response.MostrarRopaProjectionResponseDTO;
 import com.orion.orionstock_indumentaria_backend.ropa.dto.response.MostrarRopaResponseDTO;
 import com.orion.orionstock_indumentaria_backend.ropa.model.Categoria;
 import com.orion.orionstock_indumentaria_backend.ropa.model.Ropa;
@@ -15,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -88,4 +88,16 @@ public class RopaService implements IRopaService{
         return mostrarRopaResponseDTOS;
 
     }
+
+    @Override
+    public List<MostrarRopaProjectionResponseDTO> mostrarRopaPorPaginacion(int pagina, int limit, Long idLocal) {
+        iLocalRepository.findById(idLocal).orElseThrow(() -> new RuntimeException("El local no existe en la base de datos"));
+
+        int offset = (pagina - 1) * limit;
+
+        List<MostrarRopaProjectionResponseDTO> ropa = iRopaRepository.traerRopaPaginacion(limit, offset, idLocal);
+
+        return ropa;
+    }
+
 }

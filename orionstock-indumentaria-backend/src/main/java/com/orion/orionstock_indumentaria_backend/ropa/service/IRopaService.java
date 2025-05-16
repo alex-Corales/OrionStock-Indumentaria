@@ -1,6 +1,7 @@
 package com.orion.orionstock_indumentaria_backend.ropa.service;
 
 import com.orion.orionstock_indumentaria_backend.ropa.dto.request.CargarRopaRequestDTO;
+import com.orion.orionstock_indumentaria_backend.ropa.dto.response.MostrarRopaProjectionResponseDTO;
 import com.orion.orionstock_indumentaria_backend.ropa.dto.response.MostrarRopaResponseDTO;
 import com.orion.orionstock_indumentaria_backend.ropa.model.Categoria;
 
@@ -10,4 +11,5 @@ public interface IRopaService {
     Long cargarRopa(CargarRopaRequestDTO ropaRequestDTO, Long idLocal);
     List<MostrarRopaResponseDTO> mostrarRopa(Long idLocal);
     List<MostrarRopaResponseDTO> filtrarRopa(Categoria categoria, String nombre, Long idLocal);
+    List<MostrarRopaProjectionResponseDTO> mostrarRopaPorPaginacion(int pagina, int limit, Long idLocal);
 }

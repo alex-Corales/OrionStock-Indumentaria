@@ -7,7 +7,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.*;
 
-@Setter @Getter @NoArgsConstructor @AllArgsConstructor @ToString
+@Setter @Getter @NoArgsConstructor @ToString
 public class MostrarRopaResponseDTO {
     private Long idRopa;
     private Long idVariante;
@@ -22,4 +22,20 @@ public class MostrarRopaResponseDTO {
     private double precioUnidadCompra;
     private double precioUnidadVenta;
     private int cantidad;
+
+    public MostrarRopaResponseDTO(Long idRopa, Long idVariante, String nombre, Categoria categoria,
+                                  Talle talle, String color, Estado estado,
+                                  double precioUnidadCompra, double precioUnidadVenta, int cantidad) {
+        this.idRopa = idRopa;
+        this.idVariante = idVariante;
+        this.nombre = nombre;
+        this.categoria = categoria;
+        this.talle = talle;
+        this.color = color;
+        this.estado = estado;
+        this.precioUnidadCompra = precioUnidadCompra;
+        this.precioUnidadVenta = precioUnidadVenta;
+        this.cantidad = cantidad;
+    }
+
 }
