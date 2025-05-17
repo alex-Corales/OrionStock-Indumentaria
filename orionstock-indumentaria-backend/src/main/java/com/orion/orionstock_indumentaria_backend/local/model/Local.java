@@ -1,6 +1,7 @@
 package com.orion.orionstock_indumentaria_backend.local.model;
 
 import com.orion.orionstock_indumentaria_backend.ropa.model.Ropa;
+import com.orion.orionstock_indumentaria_backend.venta.model.Venta;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,4 +23,7 @@ public class Local {
     @OneToMany
     @JoinColumn(name = "local_id")
     private List<Ropa> ropas = new ArrayList<>();
+    @OneToMany
+    @JoinColumn(name = "local_id")
+    private List<Venta> ventas = new ArrayList<>();
 }
