@@ -13,7 +13,7 @@ public class DetalleVenta {
     private Long id;
     private int cantidad;
     private double precioUnitario;
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "variante_id")
-    private Variante variante = new Variante();
+    private Variante variante;
 }
